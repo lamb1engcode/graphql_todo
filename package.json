@@ -12,7 +12,7 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js localhost 4141"
+    "start": "nodemon index.js localhost 7221"
   },
   "keywords": [],
   "devDependencies": {

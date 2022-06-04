@@ -111,6 +111,6 @@ const server = new ApolloServer({
   },
 });
 
-server.listen().then(({ url }) => {
+server.listen({port: 7221}).then(({ url }) => {
   console.log(`🚀 Server ready at ${url}`);
 });
