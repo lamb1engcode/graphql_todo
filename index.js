@@ -45,7 +45,11 @@ const resolvers = {
       return { id, type: cache.get(id) };
     },
     user: (_, { id }) => {
-      return { id, username: cacheUser.get(id).username };
+      const user = cacheUser.get(id);
+      if (user) {
+        return { id, username: user.username };
+      } 
+      throw new Error("User not found");
     },
   },
   Mutation: {
