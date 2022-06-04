@@ -1,0 +1,22 @@
+{
+  "name": "mutations-example-app-server",
+  "description": "Server for the Apollo Client \"Mutations\" docs example app.",
+  "dependencies": {
+    "apollo-datasource-rest": "latest",
+    "apollo-server": "2.1.0",
+    "graphql": "14.0.2",
+    "lru-cache": "4.1.2",
+    "shortid": "2.2.8",
+    "node-fetch": "2.3.0"
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js localhost 4141"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@types/graphql": "14.0.1",
+    "nodemon": "1.18.4"
+  }
+}
