@@ -31,7 +31,7 @@ const typeDefs = `
 `;
 
 const cache = LRU({ max: 50, maxAge: 1000 * 60 * 60000 });
-const cacheUser = LRU({ max: 50, maxAge: 1000 * 60 * 60000 });
+const cacheUser = new LRU({ max: 50, maxAge: 1000 * 60 * 60000 });
 
 // Provide resolver functions for your schema fields
 const resolvers = {
@@ -50,12 +50,39 @@ const resolvers = {
   },
   Mutation: {
     login: (_, { username, password }) => {
-      return { id, username, password };
+      const users = [];
+      cacheUser.forEach((user, id) => {
+        users.push({ id: id, username: user.username, password: user.password });
+      });
+
+      const user = users.find(
+        (user) => user.username === username && user.password === password
+      );
+
+      if (user) {
+        return user
+      }
+      
+      throw new Error("Invalid username or password");
     },
     register: (_, { username, password }) => {
       const id = generate();
-      cache.set(id, username);
-      return { id, username, password };
+      const users = []
+      cacheUser.forEach((user, id) => {
+        users.push({ id: id, username: user.username, password: user.password });
+      });
+
+      const user = users.find(
+        (user) => user.username === username
+      );
+
+      if (!user) {
+        cacheUser.set(id, {username, password});
+        return { id, username };
+      }else {
+        throw new Error("User already exists");
+        // return null;
+      }
     },
     addTodo: (_, { type }) => {
       const id = generate();
@@ -79,13 +106,12 @@ const resolvers = {
 };
 
 function getUser(userId) {
-  console.log(userId)
   const users = [];
-  cacheUser.forEach((username, password, id) =>
-    users.push({ username, password, id })
+  cacheUser.forEach((user, id) =>
+    users.push({ id, username: user.username, password: user.password })
   );
 
-  return users.find(user => user.id === userId);
+  return users.find((user) => user.id === userId);
 }
 
 const server = new ApolloServer({
@@ -111,6 +137,6 @@ const server = new ApolloServer({
   },
 });
 
-server.listen({port: 7221}).then(({ url }) => {
+server.listen({ port: 7221 }).then(({ url }) => {
   console.log(`🚀 Server ready at ${url}`);
 });
