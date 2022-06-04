@@ -45,7 +45,7 @@ const resolvers = {
       return { id, type: cache.get(id) };
     },
     user: (_, { id }) => {
-      return { id, username: cacheUser.get(id) };
+      return { id, username: cacheUser.get(id).username };
     },
   },
   Mutation: {
