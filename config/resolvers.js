@@ -1,4 +1,4 @@
-const { register, login } = require("../services/user.service");
+const { register, login, getUserById } = require("../services/user.service");
 
 module.exports = {
   Query: {
@@ -12,11 +12,13 @@ module.exports = {
       return { id, type: cache.get(id) };
     },
     user: (parent, args, context, info) => {
-      const user = cacheUser.get(id);
-      if (user) {
-        return { id, username: user.username };
+      if (!context.userId) {
+        throw new Error("Unauthorized");
       }
-      throw new Error("User not found");
+
+      const user = getUserById(context.userId);
+
+      return user;
     },
   },
   Mutation: {
@@ -24,7 +26,7 @@ module.exports = {
       const resultLogin = await login(args);
 
       if (resultLogin.success) {
-        return {token: resultLogin.data.token};
+        return { token: resultLogin.data.token };
       } else {
         throw new Error(resultLogin.message);
       }
@@ -33,7 +35,7 @@ module.exports = {
       const resultRegister = await register(args);
 
       if (resultRegister.success) {
-        return {token: resultRegister.data.token};
+        return { token: resultRegister.data.token };
       } else {
         throw new Error(resultRegister.message);
       }

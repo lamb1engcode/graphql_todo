@@ -11,7 +11,7 @@ const userModel = `
 `;
 
 const userQuery = `
-    user(id: String!): User
+    user: User
 `;
 
 const userMutation = `

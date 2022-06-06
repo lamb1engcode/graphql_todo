@@ -44,29 +44,26 @@ const register = async (body) => {
 
 const login = async (body) => {
   try {
-    const {
-      username,
-      password
-    } = body
+    const { username, password } = body;
     const user = await USER.findOne({
-      username
-    })
+      username,
+    });
     if (!user) {
       return {
-        message: 'Invalid username !!',
-        success: false
-      }
+        message: "Invalid username !!",
+        success: false,
+      };
     }
-    const isPasswordMatch = await bcrypt.compare(password, user.password)
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
       return {
-        message: 'Invalid password !!',
-        success: false
-      }
+        message: "Invalid password !!",
+        success: false,
+      };
     }
-    const generateToken = jwtServices.createToken(user._id)
+    const generateToken = jwtServices.createToken(user._id);
     return {
-      message: 'Successfully login',
+      message: "Successfully login",
       success: true,
       data: {
         token: generateToken,
@@ -74,13 +71,24 @@ const login = async (body) => {
     };
   } catch (err) {
     return {
-      message: 'An error occurred',
-      success: false
-    }
+      message: "An error occurred",
+      success: false,
+    };
   }
-}
+};
+
+const getUserById = async (id) => {
+  try {
+    const user = await USER.findById(id);
+    return user;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
 
 module.exports = {
   register,
   login,
+  getUserById,
 };

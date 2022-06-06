@@ -4,14 +4,16 @@ const verify = (header) => {
   if (!header) {
     return null;
   }
+
   const token = header.split(" ")[1];
-  jwt.verify(token, ACCESS_TOKEN_SECRET, (err, decodedFromToken) => {
+  const value = jwt.verify(token, ACCESS_TOKEN_SECRET, (err, decodedFromToken) => {
     if (err) {
       return null;
     } else {
       return {userId: decodedFromToken};
     }
   });
+  return value;
 };
 
 const createToken = (data) => {

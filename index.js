@@ -35,20 +35,18 @@ database.connect().then(() => {
       // Get the user token from the headers.
       const token = req.headers.authorization || "";
 
-      console.log(token)
-
       if (token == "") {
         return;
       }
 
       // Decode token
-      const { userId } = verify(token);
+      const result = verify(token);
 
-      if (userId) {
-        const user = getUser(userId);
+      if (result) {
+        const userId = result.userId;
 
         // Add the user to the context
-        return { token };
+        return { userId: userId.data };
       }
 
       return;
